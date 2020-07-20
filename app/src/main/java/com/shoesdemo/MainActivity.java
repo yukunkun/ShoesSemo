@@ -27,6 +27,7 @@ public class MainActivity extends BaseActivity {
         mLayout = findViewById(R.id.swipe_layout);
         mRecyclerView = findViewById(R.id.recycler);
         setLeftIcon(R.mipmap.back);
+
     }
 
 }
