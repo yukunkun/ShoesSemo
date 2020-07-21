@@ -5,6 +5,8 @@
     <color name="colorAccent">#D81B60</color>
     <color name="color_line">#ADADAD</color>
     <color name="color_white">#ffffff</color>
+    <color name="color_number">#272727</color>
+    <color name="color_shoes_color">#313131</color>
 
 
 </resources>

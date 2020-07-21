@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import androidx.annotation.DrawableRes;
@@ -77,5 +78,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void setRightClick(View view){
 
+    }
+
+    public void showToast(String s){
+        Toast.makeText(this,s,Toast.LENGTH_SHORT).show();
     }
 }
