@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:background="#B99CF0"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize">
     <RelativeLayout
@@ -8,24 +9,28 @@
         android:layout_height="match_parent">
         <ImageView
             android:id="@+id/iv_left"
-            android:padding="0dp"
+            android:padding="5dp"
             android:background="?attr/selectableItemBackground"
             android:src="@mipmap/back_blue"
-            android:layout_width="wrap_content"
+            android:layout_width="45dp"
             android:layout_centerVertical="true"
             android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/tv_title"
             android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="#fff"
             android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"/>
         <ImageView
             android:id="@+id/iv_right"
-            android:padding="3dp"
+            android:padding="16dp"
+            android:background="?attr/selectableItemBackground"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:scaleType="centerCrop"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"/>
     </RelativeLayout>
 </LinearLayout>

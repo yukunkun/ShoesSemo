@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
@@ -14,8 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    private ActionBar actionBar;
-    private Context mContext;
+    public ActionBar actionBar;
+    public Context mContext;
     private TextView mTvTitle;
     private ImageView mIvLeft;
     private ImageView mIvRight;

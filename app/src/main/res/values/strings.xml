@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ShoesDemo</string>
+    <string name="add_goods">添加</string>
+
 </resources>
