@@ -35,6 +35,15 @@ public class RVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if(holder instanceof ShoesViewHolder){
+
+            int section = getSectionForPosition(position);
+            if(position == getPositionForSection(section)){
+                ((ShoesViewHolder) holder).mTvHeader.setVisibility(View.VISIBLE);
+                ((ShoesViewHolder) holder).mTvHeader.setText(mShoesModules.get(position).getLetter());
+            }else{
+                ((ShoesViewHolder) holder).mTvHeader.setVisibility(View.GONE);
+            }
+
             ((ShoesViewHolder) holder).mTvGoods.setText("货号："+mShoesModules.get(position).getShoes().getGoodsNo());
             ((ShoesViewHolder) holder).mTvColor.setText("颜色："+mShoesModules.get(position).getShoes().getColor());
             ((ShoesViewHolder) holder).mTvSize.setText(mShoesModules.get(position).getShoes().getSize()+"码");
@@ -46,14 +55,37 @@ public class RVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return mShoesModules.size();
     }
 
+    /**
+     * 选中的位置
+     */
+    public int getSectionForPosition(int position) {
+        return mShoesModules.get(position).getLetter().charAt(0);
+    }
+
+    /**
+     * 位置是否有,基本就能实现了，
+     */
+    public int getPositionForSection(int section) {
+        for (int i = 0; i < mShoesModules.size(); i++) {
+            String sortStr = mShoesModules.get(section).getLetter();
+            char firstChar = sortStr.toUpperCase().charAt(0);
+            if (firstChar == section) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     class ShoesViewHolder extends RecyclerView.ViewHolder{
         TextView mTvGoods,mTvColor,mTvSize;
-
+        TextView mTvHeader;
         public ShoesViewHolder(@NonNull View itemView) {
             super(itemView);
             mTvGoods=itemView.findViewById(R.id.tv_good);
             mTvColor=itemView.findViewById(R.id.tv_color);
             mTvSize=itemView.findViewById(R.id.tv_size);
+            mTvHeader=itemView.findViewById(R.id.tv_header);
         }
     }
+
 }
