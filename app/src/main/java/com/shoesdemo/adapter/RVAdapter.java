@@ -1,18 +1,23 @@
 package com.shoesdemo.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shoesdemo.R;
+import com.shoesdemo.activity.AddGoodsActivity;
 import com.shoesdemo.data.ShoesModule;
 
 import java.util.List;
@@ -50,9 +55,25 @@ public class RVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((ShoesViewHolder) holder).mTvDel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mShoesModules.get(position).getShoes().delete();
-                    mShoesModules.remove(position);
-                    notifyDataSetChanged();
+                   new AlertDialog.Builder(mContext)
+                            .setTitle("是否删除?")
+                            .setMessage("确定删除当前商品")
+                            .setNegativeButton("取消", null)
+                            .setPositiveButton("删除",new DialogInterface.OnClickListener(){
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    mShoesModules.get(position).getShoes().delete();
+                                    mShoesModules.remove(position);
+                                    notifyDataSetChanged();
+                                }
+                            }).show();
+
+                }
+            });
+            ((ShoesViewHolder) holder).mLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AddGoodsActivity.start(mContext,AddGoodsActivity.TYPE_EDIE,mShoesModules.get(position).getShoes());
                 }
             });
         }
@@ -86,6 +107,7 @@ public class RVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     class ShoesViewHolder extends RecyclerView.ViewHolder{
         TextView mTvGoods,mTvColor,mTvSize;
+        LinearLayout mLayout;
         TextView mTvHeader,mTvDel;
         public ShoesViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -94,6 +116,7 @@ public class RVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mTvSize=itemView.findViewById(R.id.tv_size);
             mTvHeader=itemView.findViewById(R.id.tv_header);
             mTvDel=itemView.findViewById(R.id.tv_del);
+            mLayout=itemView.findViewById(R.id.ll);
         }
     }
 

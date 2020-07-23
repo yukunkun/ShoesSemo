@@ -1,5 +1,6 @@
 package com.shoesdemo.data;
 
+import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
 
 import java.io.Serializable;
@@ -9,8 +10,9 @@ public class Shoes extends LitePalSupport implements Serializable {
     private String color;
     private String goodsNo;
     private String remark;
-    private String timeStamp;
 
+    @Column(unique = true, defaultValue = "unknown")
+    private String timeStamp;
     public String getSize() {
         return size;
     }

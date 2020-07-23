@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -18,6 +17,8 @@ import com.shoesdemo.R;
 import com.shoesdemo.data.Shoes;
 import com.shoesdemo.dialog.ColorDialog;
 import com.shoesdemo.dialog.SizeDialog;
+
+import org.litepal.LitePal;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -47,6 +48,7 @@ public class AddGoodsActivity extends BaseActivity implements View.OnClickListen
         Intent intent=new Intent(context,AddGoodsActivity.class);
         intent.putExtra("type",type);
         intent.putExtra("shoes",shoes);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -123,7 +125,8 @@ public class AddGoodsActivity extends BaseActivity implements View.OnClickListen
             shoes.setTimeStamp(String.valueOf(System.currentTimeMillis()));
         }else {
             shoes.setTimeStamp(mShoes.getTimeStamp());
-            mShoes.delete();
+            Shoes shoesDel = LitePal.where("timeStamp =?", mShoes.getTimeStamp()).findLast(Shoes.class);
+            shoesDel.delete();
         }
         shoes.save();
         showToast("保存成功");
