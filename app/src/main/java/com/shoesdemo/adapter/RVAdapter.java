@@ -34,9 +34,8 @@ public class RVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         if(holder instanceof ShoesViewHolder){
-
             int section = getSectionForPosition(position);
             if(position == getPositionForSection(section)){
                 ((ShoesViewHolder) holder).mTvHeader.setVisibility(View.VISIBLE);
@@ -48,6 +47,14 @@ public class RVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((ShoesViewHolder) holder).mTvGoods.setText("货号："+mShoesModules.get(position).getShoes().getGoodsNo());
             ((ShoesViewHolder) holder).mTvColor.setText("颜色："+mShoesModules.get(position).getShoes().getColor());
             ((ShoesViewHolder) holder).mTvSize.setText(mShoesModules.get(position).getShoes().getSize()+"码");
+            ((ShoesViewHolder) holder).mTvDel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mShoesModules.get(position).getShoes().delete();
+                    mShoesModules.remove(position);
+                    notifyDataSetChanged();
+                }
+            });
         }
     }
 
@@ -79,13 +86,14 @@ public class RVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     class ShoesViewHolder extends RecyclerView.ViewHolder{
         TextView mTvGoods,mTvColor,mTvSize;
-        TextView mTvHeader;
+        TextView mTvHeader,mTvDel;
         public ShoesViewHolder(@NonNull View itemView) {
             super(itemView);
             mTvGoods=itemView.findViewById(R.id.tv_good);
             mTvColor=itemView.findViewById(R.id.tv_color);
             mTvSize=itemView.findViewById(R.id.tv_size);
             mTvHeader=itemView.findViewById(R.id.tv_header);
+            mTvDel=itemView.findViewById(R.id.tv_del);
         }
     }
 

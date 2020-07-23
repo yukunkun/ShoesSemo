@@ -22,6 +22,7 @@ import com.shoesdemo.utils.Cn2Spell;
 import com.shoesdemo.utils.PinyinComparator;
 import com.shoesdemo.view.ISideBarSelectCallBack;
 import com.shoesdemo.view.SideBar;
+import com.shoesdemo.view.SwipeItemLayout;
 
 import org.litepal.LitePal;
 
@@ -148,6 +149,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mIvLeft.setOnClickListener(this);
         mIvRight.setOnClickListener(this);
         mTvAddGoods.setOnClickListener(this);
+        mRecyclerView.addOnItemTouchListener(new SwipeItemLayout.OnSwipeItemTouchListener(this));
         mSideBar.setStyle(SideBar.STYLE_NORMAL);
     }
 
