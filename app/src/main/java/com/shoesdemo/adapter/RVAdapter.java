@@ -1,6 +1,7 @@
 package com.shoesdemo.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -65,9 +66,9 @@ public class RVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     /**
      * 位置是否有,基本就能实现了，
      */
-    public int getPositionForSection(int section) {
+    public int getPositionForSection( int section) {
         for (int i = 0; i < mShoesModules.size(); i++) {
-            String sortStr = mShoesModules.get(section).getLetter();
+            String sortStr = mShoesModules.get(i).getLetter();
             char firstChar = sortStr.toUpperCase().charAt(0);
             if (firstChar == section) {
                 return i;

@@ -1,69 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    xmlns:sidebar="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
+
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <include
-            layout="@layout/actionbar"/>
-        <View
-            android:layout_width="match_parent"
-            android:background="@color/color_line"
-            android:layout_height="0.5dp"/>
-        <FrameLayout
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/actionbar" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipe_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/tv_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:background="@color/color_header_bg"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:textColor="#575757"
+                        android:textSize="18sp" />
+                </FrameLayout>
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <com.shoesdemo.view.SideBar
+                android:id="@+id/sidebar"
+                android:gravity="center"
+                android:layout_marginTop="35dp"
+                android:paddingBottom="5dp"
+                android:background="@drawable/shape_sidebar"
+                android:textColor="@color/color_sidebar"
+                android:layout_alignParentRight="true"
+                android:layout_width="25dp"
+                android:textSize="16sp"
+                sidebar:scaleTime="1"
+                android:paddingRight="12dp"
+                android:layout_height="match_parent"/>
             <TextView
-                android:id="@+id/tv_header"
-                android:paddingLeft="10dp"
-                android:background="@color/color_white"
-                android:textColor="#575757"
-                android:gravity="center_vertical"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"/>
-        </FrameLayout>
+                android:id="@+id/tv_letter"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_centerInParent="true"
+                android:background="@color/color_sdbg"
+                android:gravity="center"
+                android:text="A"
+                android:textColor="#bb4e79f1"
+                android:textSize="25sp"
+                android:visibility="gone" />
+        </RelativeLayout>
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="260dp"
-        android:background="@color/color_white"
+        android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:orientation="vertical"
-        android:layout_height="match_parent">
+        android:background="@color/color_white"
+        android:orientation="vertical">
+
         <ImageView
-            android:src="@drawable/bg_drawer"
-            android:scaleType="centerCrop"
             android:layout_width="match_parent"
-            android:layout_height="160dp"/>
+            android:layout_height="160dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_drawer" />
+
         <TextView
+            android:id="@+id/tv_add_goods"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
             android:layout_marginTop="20dp"
             android:background="?attr/selectableItemBackground"
-            android:id="@+id/tv_add_goods"
-            android:textStyle="bold"
             android:clickable="true"
-            android:textSize="16sp"
-            android:text="@string/add_goods"
             android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"/>
+            android:text="@string/add_goods"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
         <View
             android:layout_width="match_parent"
-            android:background="@color/color_line"
-            android:layout_height="0.5dp"/>
+            android:layout_height="0.5dp"
+            android:background="@color/color_line" />
     </LinearLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

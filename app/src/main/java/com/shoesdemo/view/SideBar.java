@@ -1,25 +1,33 @@
 package com.shoesdemo.view;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.TextView;
 
+import androidx.annotation.IntDef;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.shoesdemo.R;
 import com.shoesdemo.utils.DensityUtil;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Created by Allen Liu on 2016/5/12.
  */
 public class SideBar extends AppCompatTextView {
-    private String[] letters = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I",
+    public static final int STYLE_WAVE = 0;
+    public static final int STYLE_NOWAVE = 1;
+    public static final int STYLE_NORMAL = 2;
+    /**
+     * 普通情况下字体大小
+     */
+    float singleTextH;
+    private String[] letters = new String[]{"@", "A", "B", "C", "D", "E", "F", "G", "H", "I",
             "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
             "W", "X", "Y", "Z", "#"};
     private Paint textPaint;
@@ -29,14 +37,7 @@ public class SideBar extends AppCompatTextView {
     private int itemH;
     private int w;
     private int h;
-    public static int STYLEWAVE=0;
-    public static int STYLENOWAVE=1;
-    public static int STYLENORMAL=2;
-    private int style=0;
-    /**
-     * 普通情况下字体大小
-     */
-    float singleTextH;
+    private int style = 0;
     /**
      * 缩放离原始的宽度
      */
@@ -54,7 +55,6 @@ public class SideBar extends AppCompatTextView {
      */
     private int scaleItemCount = 6;
     private ISideBarSelectCallBack callBack;
-
     public SideBar(Context context) {
         super(context);
         init(null);
@@ -70,45 +70,50 @@ public class SideBar extends AppCompatTextView {
         init(attrs);
     }
 
-    public void setDataResource(String[] data){
-        letters=data;
+    public void setDataResource(String[] data) {
+        letters = data;
         invalidate();
     }
-   public void setOnStrSelectCallBack(ISideBarSelectCallBack callBack){
-       this.callBack=callBack;
-   }
+
+    public void setOnStrSelectCallBack(ISideBarSelectCallBack callBack) {
+        this.callBack = callBack;
+    }
+
     /**
      * 设置字体缩放比例
+     *
      * @param scale
      */
-    public void setScaleTime(int scale){
-        scaleTime=scale;
+    public void setScaleTime(int scale) {
+        scaleTime = scale;
         invalidate();
     }
 
     /**
      * 设置缩放字体的个数，即开口大小
+     *
      * @param scaleItemCount
      */
-    public  void setScaleItemCount(int scaleItemCount){
-        this.scaleItemCount=scaleItemCount;
+    public void setScaleItemCount(int scaleItemCount) {
+        this.scaleItemCount = scaleItemCount;
         invalidate();
     }
 
     /**
      * 设置样式
+     *
      * @param style
      */
-    public void setStyle(int style){
-        this.style=style;
+    public void setStyle(int style) {
+        this.style = style;
     }
 
     private void init(AttributeSet attrs) {
-      //  setPadding(dp(10), 0, dp(10), 0);
-        if(attrs!=null) {
+        //  setPadding(dp(10), 0, dp(10), 0);
+        if (attrs != null) {
             TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.SideBar);
-           scaleTime= typedArray.getInteger(R.styleable.SideBar_scaleTime,1);
-            scaleItemCount=typedArray.getInteger(R.styleable.SideBar_scaleItemCount,6);
+            scaleTime = typedArray.getInteger(R.styleable.SideBar_scaleTime, 1);
+            scaleItemCount = typedArray.getInteger(R.styleable.SideBar_scaleItemCount, 6);
         }
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setColor(getCurrentTextColor());
@@ -116,7 +121,7 @@ public class SideBar extends AppCompatTextView {
         textPaint.setTextAlign(Paint.Align.CENTER);
         bigTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         bigTextPaint.setColor(getCurrentTextColor());
-        bigTextPaint.setTextSize(getTextSize()+getTextSize() * (scaleTime+2) );
+        bigTextPaint.setTextSize(getTextSize() + getTextSize() * (scaleTime + 2));
         bigTextPaint.setTextAlign(Paint.Align.CENTER);
         scaleTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         scaleTextPaint.setColor(getCurrentTextColor());
@@ -136,18 +141,18 @@ public class SideBar extends AppCompatTextView {
             case MotionEvent.ACTION_MOVE:
 
                 //保证在文字上才获取y
-                if(event.getX()>(w-getPaddingRight()-singleTextH-10)) {
+                if (event.getX() > (w - getPaddingRight() - singleTextH - 10)) {
                     eventY = event.getY();
                     invalidate();
                     return true;
-                }else{
+                } else {
                     eventY = 0;
                     invalidate();
                     break;
                 }
             case MotionEvent.ACTION_CANCEL:
                 //只有normal才会回调
-                if(style==2){
+                if (style == 2) {
                     //离开的回调
                     callBack.onSelectEnd();
                 }
@@ -156,21 +161,20 @@ public class SideBar extends AppCompatTextView {
                 return true;
             case MotionEvent.ACTION_UP:
                 //只有normal才会回调
-                if(style==2){
+                if (style == 2) {
                     //离开的回调
                     callBack.onSelectEnd();
                 }
                 //滑动离开文字
-                if(event.getX()>(w-getPaddingRight()-singleTextH-10)) {
+                if (event.getX() > (w - getPaddingRight() - singleTextH - 10)) {
                     eventY = 0;
                     invalidate();
                     return true;
-                }else
+                } else
                     break;
         }
         return super.onTouchEvent(event);
     }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -192,20 +196,20 @@ public class SideBar extends AppCompatTextView {
                 if (y >= currentItemY && y < nextItemY) {
 
                     currentSelectIndex = i;
-                    if(callBack!=null){
-                        callBack.onSelectStr(currentSelectIndex,letters[i]);
+                    if (callBack != null) {
+                        callBack.onSelectStr(currentSelectIndex, letters[i]);
                     }
                     //画大的字母
                     Paint.FontMetrics fontMetrics = bigTextPaint.getFontMetrics();
                     //文字绘制，有基线的区别，获取到文字的高度
                     float bigTextSize = fontMetrics.descent - fontMetrics.ascent;
                     //判断类型
-                    if(style==0||style==1){
+                    if (style == 0 || style == 1) {
                         //绘制字母，大文字
                         canvas.drawText(letters[i], w - getPaddingRight() - scaleWidth - bigTextSize, singleTextH + itemH * i, bigTextPaint);
                     }
                     //２才会回调
-                    if(style==2){
+                    if (style == 2) {
                         //选中的回调
                         callBack.onSelectStart();
                     }
@@ -250,16 +254,16 @@ public class SideBar extends AppCompatTextView {
 //                Log.i("scaleTextPaint_size",getTextSize() + getTextSize() * delta+"");
                 float drawX = maxRightX - scaleWidth * delta;
                 //超出边界直接花在边界上
-               if (style==0){//波浪形状
+                if (style == 0) {//波浪形状
                     if (drawX > maxRightX) {
                         //画边上的字母
                         canvas.drawText(letters[i], maxRightX, singleTextH + itemH * i, textPaint);
-                    }else {
+                    } else {
                         //画弧线字母
                         canvas.drawText(letters[i], drawX, singleTextH + itemH * i, scaleTextPaint);
                     }
                     //没有波浪
-                }else {
+                } else {
                     canvas.drawText(letters[i], maxRightX, singleTextH + itemH * i, textPaint);
                 }
                 //抛物线实现，没有动画效果，太生硬了
@@ -278,5 +282,10 @@ public class SideBar extends AppCompatTextView {
 //                     }
             }
         }
+    }
+
+    @IntDef(value = {STYLE_WAVE, STYLE_NOWAVE, STYLE_NORMAL})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface SideBarType {
     }
 }

@@ -2,7 +2,6 @@ package com.shoesdemo.activity;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +20,8 @@ import com.shoesdemo.data.Shoes;
 import com.shoesdemo.data.ShoesModule;
 import com.shoesdemo.utils.Cn2Spell;
 import com.shoesdemo.utils.PinyinComparator;
+import com.shoesdemo.view.ISideBarSelectCallBack;
+import com.shoesdemo.view.SideBar;
 
 import org.litepal.LitePal;
 
@@ -37,12 +38,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private ImageView mIvRight;
     private DrawerLayout mDrawerLayout;
     private TextView mTvAddGoods;
-    private List<ShoesModule> mShoesModules=new ArrayList<>();
+    private List<ShoesModule> mShoesModules = new ArrayList<>();
     private RVAdapter mRvAdapter;
     private List<Shoes> mShoesList;
     private int mCurrentPosition = 0;
-    private int mSuspensionHeight=0;
+    private int mSuspensionHeight = 0;
     private LinearLayoutManager mLayoutManager;
+    private SideBar mSideBar;
+    private TextView mTvLetter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,16 +68,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                long itemId = mRvAdapter.getItemId(mCurrentPosition + 1);
                 View view = mLayoutManager.findViewByPosition(mCurrentPosition + 1);
                 //下一个item距离top位置小于header
                 if (view != null) {
-                    if (view.getTop() <= mSuspensionHeight) {
-                        mTvHeader.setY(-(mSuspensionHeight - view.getTop()));
-                    } else {
-                        mTvHeader.setY(0);
+                    //同一个字母开头，不update
+                    if (!mShoesModules.get(mCurrentPosition + 1).getLetter().equals(mTvHeader.getText())) {
+                        if (view.getTop() <= mSuspensionHeight) {
+                            mTvHeader.setY(-(mSuspensionHeight - view.getTop()));
+                        } else {
+                            mTvHeader.setY(0);
+                        }
                     }
                 }
+
 
                 if (mCurrentPosition != mLayoutManager.findFirstVisibleItemPosition()) {
                     mCurrentPosition = mLayoutManager.findFirstVisibleItemPosition();
@@ -84,6 +90,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
         updateSuspensionBar();
+
+        mSideBar.setOnStrSelectCallBack(new ISideBarSelectCallBack() {
+            @Override
+            public void onSelectStr(int index, String selectStr) {
+                mTvLetter.setText(selectStr);
+                mRecyclerView.scrollToPosition(index);
+            }
+
+            @Override
+            public void onSelectEnd() {
+                mTvLetter.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onSelectStart() {
+                mTvLetter.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void updateSuspensionBar() {
@@ -112,6 +136,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mLayout = findViewById(R.id.swipe_layout);
         mRecyclerView = findViewById(R.id.recycler);
         mTvAddGoods = findViewById(R.id.tv_add_goods);
+        mSideBar = findViewById(R.id.sidebar);
+        mTvLetter = findViewById(R.id.tv_letter);
         mRvAdapter = new RVAdapter(mShoesModules, this);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -122,18 +148,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mIvLeft.setOnClickListener(this);
         mIvRight.setOnClickListener(this);
         mTvAddGoods.setOnClickListener(this);
+        mSideBar.setStyle(SideBar.STYLE_NORMAL);
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.iv_left:
-                if(!mDrawerLayout.isDrawerOpen(Gravity.LEFT)){
+                if (!mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
                     mDrawerLayout.openDrawer(Gravity.LEFT);
                 }
                 break;
             case R.id.iv_right:
-                AddGoodsActivity.start(this,AddGoodsActivity.TYPE_ADD);
+                AddGoodsActivity.start(this, AddGoodsActivity.TYPE_ADD);
                 break;
             case R.id.tv_add_goods:
                 ShoesDetailActivity.start(this);
@@ -145,10 +172,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         List<ShoesModule> filterDateList = new ArrayList<ShoesModule>();
         for (int i = 0; i < mShoesList.size(); i++) {
             String pinYinFirstLetter = Cn2Spell.getPinYinFirstLetter(mShoesList.get(i).getGoodsNo());
-            ShoesModule sortModel=new ShoesModule(pinYinFirstLetter.toUpperCase().charAt(0)+"",mShoesList.get(i));
+            ShoesModule sortModel = new ShoesModule(pinYinFirstLetter.toUpperCase().charAt(0) + "", mShoesList.get(i));
             filterDateList.add(sortModel);
         }
-        Collections.sort(filterDateList,new PinyinComparator());
+        Collections.sort(filterDateList, new PinyinComparator());
         return filterDateList;
     }
 
