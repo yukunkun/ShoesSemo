@@ -165,8 +165,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 AddGoodsActivity.start(this, AddGoodsActivity.TYPE_ADD);
                 break;
             case R.id.tv_add_goods:
-                AddGoodsActivity.start(this, AddGoodsActivity.TYPE_ADD);
-//                ShoesDetailActivity.start(this);
+//                AddGoodsActivity.start(this, AddGoodsActivity.TYPE_ADD);
+                ShoesDetailActivity.start(this);
                 break;
         }
     }

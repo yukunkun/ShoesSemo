@@ -8,34 +8,34 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.shoesdemo.BaseActivity;
 import com.shoesdemo.R;
+import com.shoesdemo.view.FlipClockView;
+import com.shoesdemo.view.MyClockView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShoesDetailActivity extends BaseActivity {
+public class ShoesDetailActivity extends BaseActivity implements View.OnClickListener, MyClockView.DownCountTimerListener {
 
-    private RecyclerView mRecyclerView;
-    private List<String> mList=new ArrayList<>();
-    private LinearLayoutManager mLinearLayoutManager;
-    private LinearLayout mSuspensionBar;
-    private TextView mSuspensionTv;
-    private int mCurrentPosition = 0;
-    private int mSuspensionHeight=0;
-    private RVAdapter mRvAdapter;
+    Button mBtn;
+    private MyClockView myClockView;
+    private FlipClockView mFlipClockView;
 
-    public static void start(Context context){
-        context.startActivity(new Intent(context,ShoesDetailActivity.class));
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, ShoesDetailActivity.class));
     }
 
     @Override
@@ -50,92 +50,52 @@ public class ShoesDetailActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        for (int i = 0; i < 20; i++) {
-            mList.add("number:"+i);
-        }
-        mRecyclerView = findViewById(R.id.recycler);
-        mSuspensionBar=findViewById(R.id.ll);
-        mSuspensionTv=findViewById(R.id.tv_head);
-        mLinearLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mRvAdapter = new RVAdapter();
-        mRecyclerView.setAdapter(mRvAdapter);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
+        mBtn = (Button) findViewById(R.id.button1);
+        mBtn.setOnClickListener(this);
+        myClockView = (MyClockView) findViewById(R.id.clockView);
+        mFlipClockView = findViewById(R.id.flip);
+        myClockView.setDownCountTimerListener(this);
+//        mFlipClockView.init(this);
+        mFlipClockView.setClockBackground(getDrawable(R.drawable.time_bg));
+        mFlipClockView.setClockTextColor(getResources().getColor(R.color.color_white));
+        mFlipClockView.setClockTextSize(40);
+        mFlipClockView.setFlipDirection(true);
+        CountDownTimer countDownTimer=new CountDownTimer(50000,1000) {
             @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                mLinearLayoutManager.findViewByPosition(mCurrentPosition + 1);
-                mSuspensionHeight = mSuspensionBar.getHeight();
+            public void onTick(long l) {
+                mFlipClockView.setClockTime(l/1000+"");
+                mFlipClockView.smoothFlip();
             }
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                long itemId = mRvAdapter.getItemId(mCurrentPosition + 1);
-                if(itemId %2==0){
-                    View view = mLinearLayoutManager.findViewByPosition(mCurrentPosition + 1);
-                    //下一个item距离top位置小于header
-                    if (view != null) {
-                        if (view.getTop() <= mSuspensionHeight) {
-                            mSuspensionBar.setY(-(mSuspensionHeight - view.getTop()));
-                        } else {
-                            mSuspensionBar.setY(0);
-                        }
-                    }
-                }
-                if (mCurrentPosition != mLinearLayoutManager.findFirstVisibleItemPosition()) {
-                    mCurrentPosition = mLinearLayoutManager.findFirstVisibleItemPosition();
-                    updateSuspensionBar();
-                    mSuspensionBar.setY(0);
-                }
+            public void onFinish() {
+
             }
-        });
-        updateSuspensionBar();
+        };
+        countDownTimer.start();
+
     }
 
-    private void updateSuspensionBar() {
-        mSuspensionTv.setText("header:" + mCurrentPosition);
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.button1:
+                myClockView.setDownCountTime(1000L * 60L + 1000L * 12L);
+                myClockView.startDownCountTimer();
+
+                break;
+
+            default:
+                break;
+        }
     }
 
-    class RVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+    public void stopDownCountTimer() {
+        Toast.makeText(this,"结束了",Toast.LENGTH_SHORT).show();
+    }
 
-        @NonNull
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
 
-            View view= LayoutInflater.from(mContext).inflate(R.layout.rv_item_shoes,null);
-            return new ShoesViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            if(holder instanceof ShoesViewHolder){
-                ((ShoesViewHolder) holder).mTvGoods.setText("货号："+mList.get(position));
-                ((ShoesViewHolder) holder).mTvColor.setText("颜色："+mList.get(position));
-                ((ShoesViewHolder) holder).mTvSize.setText(mList.get(position)+"码");
-            }
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public int getItemCount() {
-            return mList.size();
-        }
-
-        class ShoesViewHolder extends RecyclerView.ViewHolder{
-            TextView mTvGoods,mTvColor,mTvSize;
-
-            public ShoesViewHolder(@NonNull View itemView) {
-                super(itemView);
-                mTvGoods=itemView.findViewById(R.id.tv_good);
-                mTvColor=itemView.findViewById(R.id.tv_color);
-                mTvSize=itemView.findViewById(R.id.tv_size);
-            }
-        }
     }
 }
