@@ -1,7 +1,12 @@
 package com.shoesdemo.activity;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +23,7 @@ import com.shoesdemo.R;
 import com.shoesdemo.adapter.RVAdapter;
 import com.shoesdemo.data.Shoes;
 import com.shoesdemo.data.ShoesModule;
+import com.shoesdemo.service.AccessiblityService;
 import com.shoesdemo.utils.Cn2Spell;
 import com.shoesdemo.utils.PinyinComparator;
 import com.shoesdemo.view.ISideBarSelectCallBack;
@@ -47,6 +53,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private LinearLayoutManager mLayoutManager;
     private SideBar mSideBar;
     private TextView mTvLetter;
+    private String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,7 +173,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             case R.id.tv_add_goods:
 //                AddGoodsActivity.start(this, AddGoodsActivity.TYPE_ADD);
-                ShoesDetailActivity.start(this);
+//                ShoesDetailActivity.start(this);
+
+                boolean isAuto=isAccessibilitySettingsOn(this);
+                if(isAuto){
+                    startService(new Intent(MainActivity.this, AccessiblityService.class));
+                }else{
+                    Intent intent =new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                    startActivity(intent);
+                }
                 break;
         }
     }
@@ -186,4 +201,43 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void onRefresh() {
         getShoesData();
     }
+
+    public boolean isAccessibilitySettingsOn(Context mContext) {
+
+        int accessibilityEnabled = 0;
+        final String service = mContext.getPackageName() + "/" + AccessiblityService.class.getCanonicalName();
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(
+                    mContext.getApplicationContext().getContentResolver(),
+                    android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+            Log.v(TAG, "accessibilityEnabled = " + accessibilityEnabled);
+        } catch (Settings.SettingNotFoundException e) {
+            Log.e(TAG, "Error finding setting, default accessibility to not found: " + e.getMessage());
+        }
+
+        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
+        if (accessibilityEnabled == 1) {
+            Log.v(TAG, "***ACCESSIBILITY IS ENABLED*** -----------------");
+            String settingValue = Settings.Secure.getString(
+                    mContext.getApplicationContext().getContentResolver(),
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (settingValue != null) {
+                mStringColonSplitter.setString(settingValue);
+                while (mStringColonSplitter.hasNext()) {
+                    String accessibilityService = mStringColonSplitter.next();
+                    Log.v(TAG, "-------------- > accessibilityService :: " + accessibilityService + " " + service);
+                    if (accessibilityService.equalsIgnoreCase(service)){
+                        Log.v(TAG, "We've found the correct setting - accessibility is switched on!");
+                        return true;
+                    }
+                }
+            }
+        } else {
+
+        }
+        return false;
+    }
+
+
+
 }
