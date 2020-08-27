@@ -146,6 +146,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mTvAddGoods = findViewById(R.id.tv_add_goods);
         mSideBar = findViewById(R.id.sidebar);
         mTvLetter = findViewById(R.id.tv_letter);
+        findViewById(R.id.tv_constrain).setOnClickListener(this);
         mRvAdapter = new RVAdapter(mShoesModules, this);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -172,16 +173,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 AddGoodsActivity.start(this, AddGoodsActivity.TYPE_ADD);
                 break;
             case R.id.tv_add_goods:
-//                AddGoodsActivity.start(this, AddGoodsActivity.TYPE_ADD);
-//                ShoesDetailActivity.start(this);
+                ShoesDetailActivity.start(this);
 
-                boolean isAuto=isAccessibilitySettingsOn(this);
-                if(isAuto){
-                    startService(new Intent(MainActivity.this, AccessiblityService.class));
-                }else{
-                    Intent intent =new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                    startActivity(intent);
-                }
+//                boolean isAuto=isAccessibilitySettingsOn(this);
+//                if(isAuto){
+//                    startService(new Intent(MainActivity.this, AccessiblityService.class));
+//                }else{
+//                    Intent intent =new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+//                    startActivity(intent);
+//                }
+                break;
+            case R.id.tv_constrain:
+                ConstrainActivity.start(this);
                 break;
         }
     }

@@ -1,32 +1,24 @@
 package com.shoesdemo.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bigkoo.pickerview.builder.TimePickerBuilder;
+import com.bigkoo.pickerview.listener.OnTimeSelectListener;
+import com.bigkoo.pickerview.view.TimePickerView;
 import com.shoesdemo.BaseActivity;
 import com.shoesdemo.R;
 import com.shoesdemo.view.FlipClockView;
 import com.shoesdemo.view.MyClockView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
 
 public class ShoesDetailActivity extends BaseActivity implements View.OnClickListener, MyClockView.DownCountTimerListener {
 
@@ -74,6 +66,15 @@ public class ShoesDetailActivity extends BaseActivity implements View.OnClickLis
         };
         countDownTimer.start();
 
+        TimePickerView pvTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
+            @Override
+            public void onTimeSelect(Date date, View v) {//选中事件回调
+                Toast.makeText(ShoesDetailActivity.this,date.toString(),Toast.LENGTH_SHORT).show();
+//                tvTime.setText(getTime(date));
+            }
+        }).setType(new boolean[]{true, true, true, true, true, true}).build();
+         //注：根据需求来决定是否使用该方法（一般是精确到秒的情况），此项可以在弹出选择器的时候重新设置当前时间，避免在初始化之后由于时间已经设定，导致选中时间与当前时间不匹配的问题。
+        pvTime.show();
     }
 
     @Override
@@ -82,7 +83,6 @@ public class ShoesDetailActivity extends BaseActivity implements View.OnClickLis
             case R.id.button1:
                 myClockView.setDownCountTime(1000L * 60L + 1000L * 12L);
                 myClockView.startDownCountTimer();
-
                 break;
 
             default:
